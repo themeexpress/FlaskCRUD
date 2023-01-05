@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %}{% endblock%}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col md-12">
+                <div class="jumbotron p-3">
+                    <h2> Manage <b>Employees</b>
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addNewModal">
+                            Add New Employee
+                        </button>
+                    </h2>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                          {% for category, message in messages %}
+                            <div class="alert alert-{{ category}}">
+                              {{ message }}
+                            </div>
+                          {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <table class="table table-hover table-dark">
+                      <thead>
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Email</th>
+                          <th scope="col">Phone</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                          <th scope="row">{{ employee.id }}</th>
+                          <td>{{ employee.name }}</td>
+                          <td>{{ employee.email }}</td>
+                          <td>{{ employee.phone }}</td>
+                          <td>
+                              <a href="/update/{{ employee.id }}" class="btn btn-success btn-xs" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ employee.id }}">Edit</a>
+                              <a href="/delete/{{ employee.id }}" class="btn btn-warning btn-xs" onclick="return confirm('Are you sure to delete')">Delete</a>
+                          </td>
+                        </tr>
+                        <!-- Add New Employee Modal -->
+                        <div class="modal fade" id="addNewModal{{ employee.id }}" tabindex="-1" aria-labelledby="addNewModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addNewModalLabel">Add New Employee</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                  <form action="{{url_for('insert')}}" method="POST">
+                                      <div class="mb-3">
+                                          <label class="form-label">Name</label>
+                                          <input type="text" class="form-control" id="name" name="name" placeholder="Employee Name" required>
+                                      </div>
+                                      <div class="mb-3">
+                                          <label class="form-label">Email address</label>
+                                          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                                      </div>
+                                      <div class="mb-3">
+                                          <label class="form-label">Phone</label>
+                                          <input type="text" class="form-control" id="phone" name="phone" placeholder="Employee Phone Number" required>
+                                      </div>
+                                      <div class="mb-3">
+                                          <button class="btn btn-primary" type="submit">Add Employee</button>
+                                      </div>
+                                  </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Edit Employee Modal -->
+                        <div class="modal fade" id="editModal{{ employee.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5">Edit Employee Info</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="{{url_for('update')}}" method="post">
+                                    <input type="hidden" value="{{ employee.id }}" name="id">
+                                    <div class="mb-3">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="edit-name" value="{{ employee.name }}" name="name" placeholder="Employee Name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email address</label>
+                                        <input type="email" class="form-control" id="edit-email" value="{{ employee.email }}" name="email" placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="edit-phone" value="{{ employee.phone }}" name="phone" placeholder="Employee Phone Number" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <button class="btn btn-primary" type="submit">Edit Employee</button>
+                                    </div>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
